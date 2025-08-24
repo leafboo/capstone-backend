@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 
 const app = express();
 
+app.use(express.json()); // middleware that converst JSON from request to JavaScript object
+
 app.get("/users", (req, res) => {
     res.status(200);
     res.send("Welcome to the authentication API");
