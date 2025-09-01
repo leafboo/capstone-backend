@@ -1,6 +1,6 @@
-import mysql, { type Pool } from 'mysql2'
+import mysql from 'mysql2/promise';
 
-const pool: Pool = mysql.createPool({
+const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'password',

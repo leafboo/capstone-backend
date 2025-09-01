@@ -2,6 +2,9 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { pool } from './mysqlConnection.js'
 
+
+// remember: Every line of code is a potential vulnerability
+
 const app = express();
 
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
@@ -21,23 +24,39 @@ app.post("/users", async (req, res) => {
     try {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        console.log(`The salt is: ${salt}`);
-        console.log(`The hashed password is: ${hashedPassword}`);
-        const query = `INSERT INTO Users(UserName, Email, Salt, Hash)
-                       VALUES('${req.body.userName}', '${req.body.email}', '${salt}', '${hashedPassword}');`
-        pool.query(query, (err, resp, fields) => {
-            if (err) {
-                throw err;
-            }
-            res.status(201);
-            res.send(resp);
-        })
-         // 201 status for successfully creating new entry
+
+        const query = 'INSERT INTO Users(UserName, Email, Salt, Hash) VALUES(?, ?, ?, ?);'
+        const result = await pool.query(query, [req.body.userName, req.body.email, salt, hashedPassword]);
+        res.status(201);
+        res.send(result);
     } catch (err) {
         console.error(err)
         res.status(500);
     }
 });
+
+app.post("/users/login", async (req, res) => {
+    const query = 'SELECT Hash FROM Users WHERE UserName = ? OR Email = ? ;';
+    const [ rows ] = await pool.query(query, [req.body.userName, req.body.email]); // select the user first 
+    const user = null;
+    const hashedUserPassword = "";
+
+    if (user === null) {
+        res.status(404);
+        res.send("User not found");
+        return;
+    }
+    try {
+        if ( await bcrypt.compare(req.body.password, hashedUserPassword) ) {
+            res.send("Successfully logged in")
+        } else {
+            res.send("Wrong password. Try again.")
+        }
+    } catch (err) {
+        res.status(500);
+    }
+    // console.log(rows?[0].Hash);
+})
 
 app.listen(3000, () => {
     console.log("Server is running in localhost:3000");
