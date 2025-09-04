@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-    // CHECK IF THE USER ALREADY EXISTS
+
     if (!req.body.password) {
         return res.send("body should contain password and should not be empty");
         
