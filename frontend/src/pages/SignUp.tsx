@@ -4,7 +4,7 @@ function SignUp() {
   async function signUpUser(event: FormData) {
     const userName = event.get("userName");
     const email = event.get("email");
-    const password = event.get("passowrd");
+    const password = event.get("password");
     
     const url = "http://localhost:3000/users";
 
