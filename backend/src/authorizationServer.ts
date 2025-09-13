@@ -24,7 +24,7 @@ type UserPayload = {
 
 const app = express();
 
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
 
 

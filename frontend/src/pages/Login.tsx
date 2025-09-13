@@ -1,16 +1,12 @@
-import { useState } from 'react'
+import {login} from '../utils/ProtectedRoutes.tsx';
 
 function Login() {
 	async function loginUser(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 
-
 	    const userName = formData.get("nameEmail")
 		const password = formData.get("password");
-		console.log(`name: ${userName}`);
-		console.log(`password: ${password}`);
-
 
 		try {
 			const response = await fetch('http://localhost:4000/login', {
@@ -20,8 +16,8 @@ function Login() {
             	},
             	body: JSON.stringify({userName: userName, password: password})
 			});
-			const tokens = await response.json();
-			console.log(tokens);
+			const jwtTokens = await response.json();
+			console.log(jwtTokens);
 
 		} catch (err) {
 			console.error(err);
