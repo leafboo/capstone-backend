@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { pool } from './mysqlConnection.js'
 import jwt from 'jsonwebtoken';
 import 'dotenv/config.js';
+import cors from "cors";
 
 // REMOVE ALL KEY VALUE PAIR EXCEPT 'UserName'
 type User = {
@@ -23,7 +24,9 @@ type UserPayload = {
 
 const app = express();
 
+app.use(cors({ origin: "*" }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
+
 
 let refreshTokens: string[] = [] // this is a bad idea, store this to a database or a redis cache later
 
@@ -80,6 +83,7 @@ app.post("/login", async (req, res) => {
             const accessToken = generateAccessToken<UserPayload>(user);
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
             refreshTokens.push(refreshToken);
+            res.setHeader("Content-Type", "application/json");
             res.json({ accessToken: accessToken, refreshToken: refreshToken });
             res.send("Successfully logged in")
         } else {
@@ -91,7 +95,7 @@ app.post("/login", async (req, res) => {
 })
 
 
-// THIS FUNCTION NEED TO ONLY ACCEPT AN OBJECT WITH KEY 'USERNAME'
+
 function generateAccessToken<T extends object>(user: T) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' }); // set the expiresIn to 15m later 
 }
