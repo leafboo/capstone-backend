@@ -24,7 +24,7 @@ type UserPayload = {
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
 
 
@@ -83,9 +83,11 @@ app.post("/login", async (req, res) => {
             const accessToken = generateAccessToken<UserPayload>(user);
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
             refreshTokens.push(refreshToken);
-            res.setHeader("Content-Type", "application/json");
-            res.json({ accessToken: accessToken, refreshToken: refreshToken });
-            res.send("Successfully logged in")
+
+            // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
+            res.cookie('jwt-access-token', accessToken, { httpOnly: true, sameSite: 'strict' }) // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
+            res.setHeader("Content-Type", "application/json"); // IDK if I still need this bc I think res.json automatically does it for us
+            res.json({ success: "true" });
         } else {
             res.send("Wrong password. Try again.")
         }
@@ -97,7 +99,7 @@ app.post("/login", async (req, res) => {
 
 
 function generateAccessToken<T extends object>(user: T) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' }); // set the expiresIn to 15m later 
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });  
 }
 
 app.listen(4000, () => {

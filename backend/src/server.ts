@@ -2,6 +2,8 @@ import express, { type Request, type Response, type NextFunction } from "express
 import bcrypt from "bcrypt";
 import { pool } from './mysqlConnection.js'
 import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
+import cors from "cors";
 import 'dotenv/config.js';
 
 
@@ -9,23 +11,36 @@ import 'dotenv/config.js';
 
 const app = express();
 
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
     res.status(200);
     res.send("Welcome to the authentication API");
 });
 
-app.get("/users", authenticateToken, (req, res) => {
-    const user = res.locals.user;
-
-    if (user) {
-        res.status(200).json(user);
-    } else {
-        res.status(403).json({message: "Access denied"})
-    }
-    
+// Do I need this ??
+app.get("/users", (req, res) => {
+    res.send("I'm not sure if this endpoint is needed")
 })
+
+// For getting the current user's details
+app.get("/users/me", authenticateToken, async (req, res) => {
+    const userId = res.locals.user.sub;
+    const cookieValue = req.cookies;
+    console.log(cookieValue);
+
+    if (userId) {
+        const query = 'SELECT * FROM Users WHERE Id = ?';
+        const [ results ] = await pool.query(query, [userId]);
+        const userDetails = JSON.parse(JSON.stringify(results)); // this is set to arrays by default bc of the return value of the pool.query
+
+        res.status(200).json(userDetails[0]);
+    } else {
+        res.sendStatus(403);
+    }
+});
 
 app.post("/users", async (req, res) => {
 
