@@ -1,6 +1,11 @@
-import {login} from '../utils/ProtectedRoutes.tsx';
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 function Login() {
+	const { setIsAuthenticated } = useContext(AuthContext);
+	let navigate = useNavigate();
+
 	async function loginUser(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
@@ -18,10 +23,13 @@ function Login() {
             	body: JSON.stringify({userName: userName, password: password})
 			});
 			const jwtTokens = await response.json();
-			console.log(jwtTokens);
+			console.log(jwtTokens); // I don't think these are jwt tokens
+			setIsAuthenticated(true);
+			navigate("/dashboard");
 
 		} catch (err) {
 			console.error(err);
+			setIsAuthenticated(false);
 		}	
 		
 

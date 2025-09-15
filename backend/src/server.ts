@@ -28,8 +28,6 @@ app.get("/users", (req, res) => {
 // For getting the current user's details
 app.get("/users/me", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
-    const cookieValue = req.cookies;
-    console.log(cookieValue);
 
     if (userId) {
         const query = 'SELECT * FROM Users WHERE Id = ?';
@@ -66,20 +64,17 @@ app.post("/users", async (req, res) => {
 
 
 function authenticateToken(req: Request, res: Response, next: NextFunction)  {
+
+
+    const accessToken: string = req.cookies.jwt_access_token;
     
-    if (!req.headers.authorization || !req.headers) {
-        return res.sendStatus(401);
-    }
     
 
-    const authHeader = req.headers.authorization; // find out what is the return value of req.headers
-    const token = authHeader.split(' ')[1];
-
-    if (token === undefined || token === null) {
+    if (accessToken === undefined || accessToken === null) {
         return res.status(401).json({message:'Token verification failed'});
     }
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decode) => {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decode) => {
         if (err) {
             if (err.name === "TokenExpiredError") {
                 return res.status(401).json({ message: "Access token expired" });
