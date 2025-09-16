@@ -32,7 +32,6 @@ export default function Dashboard() {
         getUserData();
     }, []);
 
-    console.log("user details:", UserDetails);
 
     
     

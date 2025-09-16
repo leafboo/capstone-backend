@@ -1,4 +1,4 @@
-import { useContext, type ReactEventHandler } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import authApi from "../api/auth";
@@ -6,6 +6,8 @@ import authApi from "../api/auth";
 function Login() {
 	const { setIsAuthenticated } = useContext(AuthContext);
 	let navigate = useNavigate();
+
+	// IF USER IS ALREADY AUTHENTICATED, DO NOT SHOW THEM THIS PAGE
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -15,10 +17,11 @@ function Login() {
   		const password = formData.get("password") as string;
 
 		try {
-			const responseMessage = await authApi.loginUser(userName, password);
-			console.log(responseMessage);
+			await authApi.loginUser(userName, password);
+			localStorage.setItem("isUserAuthenticated", "true");
 			setIsAuthenticated(true);
-			navigate("/dashboard")
+			navigate("/dashboard");
+
 		} catch(err) {
 			console.error(err);
 			setIsAuthenticated(false);

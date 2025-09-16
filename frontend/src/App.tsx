@@ -6,11 +6,31 @@ import ProtectedRoutes from './utils/ProtectedRoutes'
 import Dashboard from './pages/Dashboard'
 import { AuthContext } from './context/AuthContext'
 import { useState } from 'react'
+import resourcesApi from './api/resources'
 
 function App() {
-
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	// look at cookies if the access token of the browser is valid
+	const localStorageValue = localStorage.getItem("isUserAuthenticated") === "true" ? true : false;
+	const [isAuthenticated, setIsAuthenticated] = useState(localStorageValue || false); // !!localStorage converts the string to boolean
 	const value = { isAuthenticated, setIsAuthenticated }
+
+	
+	const checkAuthentication = async() => {
+		try {
+
+			await resourcesApi.getUser();
+			setIsAuthenticated(true);
+			localStorage.setItem("isUserAuthenticated", "true");
+			
+		} catch(err) {
+			console.error(err);
+			setIsAuthenticated(false);
+			localStorage.setItem("isUserAuthenticated", "false");
+		}
+	}
+	checkAuthentication();
+
+	console.log(`User authenticated: ${isAuthenticated}`)
   
 
   return (
