@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import resourcesApi from "../api/resources";
 
 type UserType = {
     userId: string;
@@ -8,22 +9,31 @@ type UserType = {
     hash: string;
 }
 
+
+
 export default function Dashboard() {
     const [UserDetails, setUserDetails] = useState<UserType>();
 
     useEffect(() => {
-        getUser();
-    }, [UserDetails]);
+        const getUserData = async() => {
+            try {
+                const {Id, UserName, Email, Salt, Hash} = await resourcesApi.getUser();
+                setUserDetails({
+                    userId: Id,
+                    userName: UserName,
+                    email: Email,
+                    salt: Salt,
+                    hash: Hash
+                });
+            } catch(err) {
+                console.error(err);
+            }
+        }
+        getUserData();
+    }, []);
 
-    // put the urls for fetch in an environment variable
-    async function getUser() {
-        const response = await fetch("http://localhost:3000/users/me", {
-            credentials: 'include'
-        });
-        const result = await response.json();
-        setUserDetails(result);
-        console.log(result);
-    }
+    console.log("user details:", UserDetails);
+
     
     
     // do some fetch request to the endpoint "/users/me"
@@ -33,10 +43,11 @@ export default function Dashboard() {
             <h2>Welcome {UserDetails?.userName}</h2><br />
             
             <div>User Details:</div>
-            <ul>
+            <ul className="list-disc">
                 <li>User Name: {UserDetails?.userName}</li>
                 <li>User Email: {UserDetails?.email}</li>
                 <li>More User details to be added...</li>
+                <li>lorem ipsum</li>
             </ul>
         </>
     )
