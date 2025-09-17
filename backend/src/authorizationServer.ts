@@ -86,7 +86,6 @@ app.post("/login", async (req, res) => {
 
             // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
             res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' }) // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
-            res.setHeader("Content-Type", "application/json"); // IDK if I still need this bc I think res.json automatically does it for us
             res.json({ success: "true" });
         } else {
             res.send("Wrong password. Try again.")
