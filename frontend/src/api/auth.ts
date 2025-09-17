@@ -1,7 +1,7 @@
 const authApi = {
     
     async loginUser(userName: string, password: string) {
-        const response = await fetch("http://localhost:4000/login", {
+        const response = await fetch(`${import.meta.env.VITE_AUTH_SERVER_API_BASE_URL}/login`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

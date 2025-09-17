@@ -2,7 +2,7 @@ const resourcesApi = {
 
     // put the urls for fetch in an environment variable
     async getUser() {
-        const response = await fetch("http://localhost:3000/users/me", {
+        const response = await fetch(`${import.meta.env.VITE_SERVER_API_BASE_URL}/users/me`, {
             credentials: 'include'
         });
         //setUserDetails(result);
