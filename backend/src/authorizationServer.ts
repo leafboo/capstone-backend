@@ -32,6 +32,8 @@ let refreshTokens: string[] = [] // this is a bad idea, store this to a database
 
 app.delete("/logout", (req, res) => {
     refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+    res.clearCookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' });
+    res.clearCookie('jwt_refresh_token', accessToken, { httpOnly: true, sameSite: 'strict' });
     res.sendStatus(204);
 })
 
@@ -85,11 +87,11 @@ app.post("/login", async (req, res) => {
             refreshTokens.push(refreshToken);
 
             // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
-            res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' }) // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
-            res.cookie('jwt_refresh_token', refreshToken, { httpOnly: true, sameSite: 'strict' })
+            res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' }); // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
+            res.cookie('jwt_refresh_token', refreshToken, { httpOnly: true, sameSite: 'strict' });
             res.json({ success: "true" });
         } else {
-            res.send("Wrong password. Try again.")
+            res.send("Wrong password. Try again.");
         }
     } catch (err) {
         res.status(500);
