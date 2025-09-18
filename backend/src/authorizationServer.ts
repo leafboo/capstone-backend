@@ -2,6 +2,7 @@ import express, { type Request, type Response, type NextFunction } from "express
 import bcrypt from "bcrypt";
 import { pool } from './mysqlConnection.js'
 import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 import 'dotenv/config.js';
 import cors from "cors";
 
@@ -26,6 +27,7 @@ const app = express();
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
+app.use(cookieParser());
 
 
 let refreshTokens: string[] = [] // this is a bad idea, store this to a database or a redis cache later
@@ -39,6 +41,7 @@ app.delete("/logout", (req, res) => {
 
 app.post("/token", (req, res) => { // for handling the request token from the client to request for new refresh and access tokens
 
+    // const refreshToken: string = req.cookies.jwt_refresh_token; 
     const refreshToken: string = req.body.token;
 
     if (refreshToken === null) {
