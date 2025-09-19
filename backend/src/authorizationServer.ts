@@ -86,7 +86,7 @@ app.post("/login", async (req, res) => {
 
             const user = { sub: data[0].Id } // jwt user payload
             const accessToken = generateAccessToken<UserPayload>(user);
-            const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+            const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
             refreshTokens.push(refreshToken);
 
             // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
