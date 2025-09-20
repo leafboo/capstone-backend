@@ -13,6 +13,19 @@ const authApi = {
         }
 
         return response.json(); // returns your JWT or response object
+    },
+
+    async logoutUser() {
+        const response = await fetch(`${import.meta.env.VITE_AUTH_SERVER_API_BASE_URL}/logout`, {
+            method: 'DELETE',
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error("Logout failed");
+        }
+
+        console.log("Successfully logged out") 
     }
     
 }

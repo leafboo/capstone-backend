@@ -14,7 +14,7 @@ function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(localStorageValue || false); // !!localStorage converts the string to boolean
 	const value = { isAuthenticated, setIsAuthenticated }
 
-	
+	// Do I need to move this function to ProtectedRoutes component?	
 	const checkAuthentication = async() => {
 		try {
 

@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import resourcesApi from "../api/resources";
+import authApi from "../api/auth";
 
 type UserType = {
     userId: string;
@@ -13,6 +16,7 @@ type UserType = {
 
 export default function Dashboard() {
     const [UserDetails, setUserDetails] = useState<UserType>();
+    const { setIsAuthenticated } = useContext(AuthContext);
 
     useEffect(() => {
         const getUserData = async() => {
@@ -33,6 +37,16 @@ export default function Dashboard() {
     }, []);
 
 
+    async function handleLogout() {
+        try {
+            await authApi.logoutUser();
+            setIsAuthenticated(false);
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+
     
     
     // do some fetch request to the endpoint "/users/me"
@@ -46,8 +60,9 @@ export default function Dashboard() {
                 <li>User Name: {UserDetails?.userName}</li>
                 <li>User Email: {UserDetails?.email}</li>
                 <li>More User details to be added...</li>
-                <li>lorem ipsum</li>
-            </ul>
+            </ul> <br />
+
+            <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" onClick={handleLogout} >Log out</button> 
         </>
     )
 }
