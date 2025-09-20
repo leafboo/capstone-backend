@@ -32,6 +32,7 @@ const passwordDB = data[0].Hash;
 
         } else {
             res.send("Wrong password. Try again.")
+        }
 ```
 
 If the user credentials are correct, it will generate a jwt access token and refresh token and send the two as an [HttpOnly cookie](https://owasp.org/www-community/HttpOnly) to prevent [XSS](https://portswigger.net/web-security/cross-site-scripting) attacks.
