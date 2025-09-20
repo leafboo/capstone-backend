@@ -1,5 +1,5 @@
 **Todo List**
-1. Make the Login page inaccessible for authenticated users
+1. Make the Login, Sign up, and Landing page inaccessible for authenticated users
 2. The JWT tokens should not be valid after the user logs out
 3. Generate a new access token when the current one is expired 
 4. When the user logs out, when they login again they should remain in the same page prior to logging out
