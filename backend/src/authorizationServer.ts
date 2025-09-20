@@ -50,11 +50,12 @@ app.post("/token", (req, res) => { // for handling the request token from the cl
             return res.status(403);
         }
         if (decode === undefined) {
-            return;
+            return res.status(403).send("There is no payload found in the refresh token");
         }
 
         const accessToken = generateAccessToken({ sub: decode.sub }); 
-        res.json({ accessToken: accessToken });
+        res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' });
+        res.status(200).send("New access token successfully created");
 
     })
 });
