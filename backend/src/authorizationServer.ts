@@ -12,10 +12,6 @@ type User = {
     Hash: string;
 }
 
-interface CustomJwtPayload extends jwt.JwtPayload {
-    sub: string;
-}
-
 type UserPayload = {
     sub: number;
 }
@@ -30,26 +26,23 @@ app.use(express.json()); // middleware that converst JSON from request to JavaSc
 app.use(cookieParser());
 
 
-let refreshTokens: string[] = [] // this is a bad idea, store this to a database or a redis cache later
 
 app.delete("/logout", (req, res) => {
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token);
-    res.clearCookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' });
-    res.clearCookie('jwt_refresh_token', accessToken, { httpOnly: true, sameSite: 'strict' });
+    
+    res.clearCookie('jwt_access_token', { httpOnly: true, sameSite: 'strict' });
+    res.clearCookie('jwt_refresh_token', { httpOnly: true, sameSite: 'strict' });
     res.sendStatus(204);
 })
 
 app.post("/token", (req, res) => { // for handling the request token from the client to request for new refresh and access tokens
 
     // const refreshToken: string = req.cookies.jwt_refresh_token; 
-    const refreshToken: string = req.body.token;
+    const refreshToken: string = req.cookies.jwt_refresh_token;
 
     if (refreshToken === null) {
         return res.sendStatus(401);
     }
-    if (!refreshTokens.includes(refreshToken)) {
-        return res.sendStatus(403);
-    }
+
 
     // FIX THIS DOGSHIT CODE
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decode) => {
@@ -87,7 +80,6 @@ app.post("/login", async (req, res) => {
             const user = { sub: data[0].Id } // jwt user payload
             const accessToken = generateAccessToken<UserPayload>(user);
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-            refreshTokens.push(refreshToken);
 
             // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
             res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' }); // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
