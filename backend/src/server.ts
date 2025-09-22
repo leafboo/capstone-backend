@@ -20,24 +20,20 @@ app.get("/", (req, res) => {
     res.send("Welcome to the authentication API");
 });
 
-// Do I need this ??
+// This endpoint is needed for the admin feature 
 app.get("/users", (req, res) => {
-    res.send("I'm not sure if this endpoint is needed")
+    res.send("User accounts")
 })
 
 // For getting the current user's details
 app.get("/users/me", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
 
-    if (userId) {
-        const query = 'SELECT * FROM Users WHERE Id = ?';
-        const [ results ] = await pool.query(query, [userId]);
-        const userDetails = JSON.parse(JSON.stringify(results)); // this is set to arrays by default bc of the return value of the pool.query
+    const query = 'SELECT * FROM Users WHERE Id = ?';
+    const [ results ] = await pool.query(query, [userId]);
+    const userDetails = JSON.parse(JSON.stringify(results)); // this is set to arrays by default bc of the return value of the pool.query
 
-        res.status(200).json(userDetails[0]);
-    } else {
-        res.sendStatus(403);
-    }
+    res.status(200).json(userDetails[0]);
 });
 
 app.post("/users", async (req, res) => {
@@ -69,15 +65,15 @@ function authenticateToken(req: Request, res: Response, next: NextFunction)  {
     
 
     if (accessToken === undefined || accessToken === null) {
-        return res.status(403).json({message:'Token verification failed'});
+        return res.status(403).send("No access token provided")
     }
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decode) => {
         if (err) {
             if (err.name === "TokenExpiredError") {
-                return res.status(401).json({ message: "Access token expired" });
+                return res.status(401).send("Access token expired");
             }
-            return res.status(403).json({ message: "Access token invalid" });
+            return res.status(403).send("Access token invalid");
         }
         res.locals.user = decode;
         next();
