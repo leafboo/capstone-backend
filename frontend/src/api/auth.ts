@@ -34,11 +34,7 @@ const authApi = {
             credentials: "include"
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to get a new access token");
-        }
-
-        console.log(await response.text());
+        return response;
     }
     
 }

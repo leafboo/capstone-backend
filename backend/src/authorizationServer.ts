@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import 'dotenv/config.js';
 import cors from "cors";
 
-// REMOVE ALL KEY VALUE PAIR EXCEPT 'UserName'
 type User = {
     Id: number;
     Hash: string;
@@ -36,21 +35,18 @@ app.delete("/logout", (req, res) => {
     res.sendStatus(204);
 })
 
-app.post("/token", (req, res) => { // for handling the request token from the client to request for new refresh and access tokens
+app.post("/token", (req, res) => { 
 
-    // const refreshToken: string = req.cookies.jwt_refresh_token; 
     const refreshToken: string = req.cookies.jwt_refresh_token;
 
     if (refreshToken === null) {
         return res.status(403).send("There is no refresh token provided");
     }
 
-
-    // FIX THIS DOGSHIT CODE
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decode) => {
         if (err) {
             if (err.name === "TokenExpiredError") {
-                return res.status(401).json({ message: "Refresh token expired" });
+                return res.status(401).send("Refresh token expired");
             }
             return res.status(403).send("Refresh token invalid");
         }
