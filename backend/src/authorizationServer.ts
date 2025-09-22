@@ -25,7 +25,9 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // middleware that converst JSON from request to JavaScript object
 app.use(cookieParser());
 
-
+app.get("/", (req, res) => {
+    res.send("Welcome to the auth api")
+})
 
 app.delete("/logout", (req, res) => {
     
@@ -40,14 +42,17 @@ app.post("/token", (req, res) => { // for handling the request token from the cl
     const refreshToken: string = req.cookies.jwt_refresh_token;
 
     if (refreshToken === null) {
-        return res.sendStatus(401);
+        return res.status(403).send("There is no refresh token provided");
     }
 
 
     // FIX THIS DOGSHIT CODE
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decode) => {
         if (err) {
-            return res.status(403);
+            if (err.name === "TokenExpiredError") {
+                return res.status(401).json({ message: "Refresh token expired" });
+            }
+            return res.status(403).send("Refresh token invalid");
         }
         if (decode === undefined) {
             return res.status(403).send("There is no payload found in the refresh token");
@@ -97,7 +102,7 @@ app.post("/login", async (req, res) => {
 
 
 function generateAccessToken<T extends object>(user: T) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });  
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });  
 }
 
 app.listen(4000, () => {

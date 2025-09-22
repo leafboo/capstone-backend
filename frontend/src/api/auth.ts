@@ -25,7 +25,20 @@ const authApi = {
             throw new Error("Logout failed");
         }
 
-        console.log("Successfully logged out") 
+        console.log("Successfully logged out");
+    },
+
+    async getNewAccessToken() {
+        const response = await fetch(`${import.meta.env.VITE_AUTH_SERVER_API_BASE_URL}/token`, {
+            method: 'POST',
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to get a new access token");
+        }
+
+        console.log(await response.text());
     }
     
 }

@@ -65,13 +65,11 @@ app.post("/users", async (req, res) => {
 
 function authenticateToken(req: Request, res: Response, next: NextFunction)  {
 
-
     const accessToken: string = req.cookies.jwt_access_token;
-    
     
 
     if (accessToken === undefined || accessToken === null) {
-        return res.status(401).json({message:'Token verification failed'});
+        return res.status(403).json({message:'Token verification failed'});
     }
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decode) => {
