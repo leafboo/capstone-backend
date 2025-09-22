@@ -12,7 +12,7 @@ const authApi = {
             throw new Error("Login failed");
         }
 
-        return response.json(); // returns your JWT or response object
+        return response.text(); 
     },
 
     async logoutUser() {

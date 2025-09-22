@@ -68,34 +68,32 @@ app.post("/token", (req, res) => { // for handling the request token from the cl
 app.post("/login", async (req, res) => {
     const query = 'SELECT Id, Hash FROM Users WHERE UserName = ? OR Email = ? ;';
     const [ results ] = await pool.query(query, [req.body.userName, req.body.email]); // find the user's hashed password
-    const data: User[] = JSON.parse(JSON.stringify(results));
+    const usersFound: User[] = JSON.parse(JSON.stringify(results));
    
     const passwordInput = req.body.password;
     
     
-    
-    if (data.length === 0 || data[0] === undefined) {
-        res.status(404);
-        res.send("User not found");
-        return;
+    if (usersFound.length === 0 || usersFound[0] === undefined) {
+        return res.status(404).send("User not found");
     }
+
     try {
-        const passwordDB = data[0].Hash;
+        const passwordDB = usersFound[0].Hash;
         if ( await bcrypt.compare(passwordInput, passwordDB) ) {
 
-            const user = { sub: data[0].Id } // jwt user payload
+            const user = { sub: usersFound[0].Id } // jwt user payload
             const accessToken = generateAccessToken<UserPayload>(user);
             const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
             // we need the 'secure' attribute set to 'true' to only use the cookies with HTTPS only
             res.cookie('jwt_access_token', accessToken, { httpOnly: true, sameSite: 'strict' }); // the sameSite attribute prevents CSRF attacks (it will only send the cookie if it originated from the same site)
             res.cookie('jwt_refresh_token', refreshToken, { httpOnly: true, sameSite: 'strict' });
-            res.json({ success: "true" });
+            res.status(200).send("Successfully logged in");
         } else {
-            res.send("Wrong password. Try again.");
+            res.status(401).send("Wrong password. Try again.");
         }
     } catch (err) {
-        res.status(500);
+        res.sendStatus(500);
     }
 })
 
