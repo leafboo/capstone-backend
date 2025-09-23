@@ -1,8 +1,8 @@
 **Todo List**
-1. Make the Login, Sign up, and Landing page inaccessible for authenticated users
-2. The JWT tokens should not be valid after the user logs out
-3. Generate a new access token when the current one is expired 
-4. When the user logs out, when they login again they should remain in the same page prior to logging out
+1. Make the Login, Sign up, and Landing page inaccessible for authenticated users (priority)
+2. The JWT tokens should not be valid after the user logs out (least priority)
+3. Refactor the front end of handling refreshed access tokens (least priority) 
+4. After the user logs out and logs in again, they should remain in the same page prior to logging out (priority)
 
 # User Authentication Documentation
 
