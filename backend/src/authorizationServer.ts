@@ -96,7 +96,7 @@ app.post("/login", async (req, res) => {
 
 
 function generateAccessToken<T extends object>(user: T) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });  
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });  
 }
 
 app.listen(4000, () => {
