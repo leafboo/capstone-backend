@@ -30,8 +30,6 @@ function App() {
 	}
 	checkAuthentication();
 
-	console.log(`User authenticated: ${isAuthenticated}`)
-  
 
   return (
     <>

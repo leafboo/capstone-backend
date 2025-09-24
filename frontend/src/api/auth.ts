@@ -8,7 +8,7 @@ const authApi = {
             body: JSON.stringify({ userName: userName, password: password }),
         });
 
-        if (!response.ok) {
+        if (!response.ok) { // if the status code is anything other than 2xx
             throw new Error("Login failed");
         }
 
@@ -29,12 +29,11 @@ const authApi = {
     },
 
     async getNewAccessToken() {
-        const response = await fetch(`${import.meta.env.VITE_AUTH_SERVER_API_BASE_URL}/token`, {
+        await fetch(`${import.meta.env.VITE_AUTH_SERVER_API_BASE_URL}/token`, {
             method: 'POST',
             credentials: "include"
         });
 
-        return response;
     }
     
 }
