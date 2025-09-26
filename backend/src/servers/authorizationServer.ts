@@ -1,6 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { pool } from './mysqlConnection.js'
+import { pool } from '../mysqlConnection.js'
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config.js';

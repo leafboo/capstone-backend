@@ -1,6 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { pool } from './mysqlConnection.js'
+import { pool } from '../mysqlConnection.js'
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 // This endpoint is needed for the admin feature 
 app.get("/users", (req, res) => {
     res.send("User accounts")
-})
+});
 
 // For getting the current user's details
 app.get("/users/me", authenticateToken, async (req, res) => {
@@ -35,6 +35,41 @@ app.get("/users/me", authenticateToken, async (req, res) => {
 
     res.status(200).json(userDetails[0]);
 });
+
+app.get("/workspaces", authenticateToken, async (req, res) => {
+    const userId = res.locals.user.sub;
+    
+    const query = 'SELECT * FROM Workspaces WHERE UserId = ?';
+    const [ results ] = await pool.query(query, [userId]);
+    const workspaces = JSON.parse(JSON.stringify(results));
+
+    res.status(200).json(workspaces);
+});
+app.post("/workspaces", authenticateToken,  async(req, res) => {
+    const userId = res.locals.user.sub;
+    const {workspaceName, dateCreated} = req.body;
+    const numberOfPapers = 0;
+
+    const query = `INSERT INTO Workspaces (Name, DateCreated, NumberOfPapers, UserId) 
+                   VALUES (?, ?, ?, ?)`;
+    const [ results ] = await pool.query(query, [workspaceName, dateCreated, numberOfPapers, userId]);
+    const workspaceId = JSON.parse(JSON.stringify(results)).insertId;
+
+
+    res.status(201).json({message: "Workspace successfully created", workspaceId: workspaceId});
+
+});
+
+app.get("/workspaces/:id", authenticateToken, async (req, res) => {
+    const userId = res.locals.user.sub;
+    
+    const query = 'SELECT * FROM Workspaces WHERE Id = ? AND UserId = ?';
+    const [ results ] = await pool.query(query, [req.params.id, userId]);
+    const workspace = JSON.parse(JSON.stringify(results));
+
+    res.status(200).json(workspace);
+});
+
 
 app.post("/users", async (req, res) => {
 
@@ -83,4 +118,4 @@ function authenticateToken(req: Request, res: Response, next: NextFunction)  {
 
 app.listen(3000, () => {
     console.log("Server is running in localhost:3000");
-})
+});
