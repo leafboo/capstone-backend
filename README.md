@@ -2,7 +2,7 @@
 1. Make the Login, Sign up, and Landing page inaccessible for authenticated users (priority)
 2. The JWT tokens should not be valid after the user logs out (least priority)
 3. Refactor the front end of handling refreshed access tokens (least priority) 
-4. After the user logs out and logs in again, they should remain in the same page prior to logging out (priority)
+4. After the user logs out and logs in again, they should remain in the same page prior to logging out (least priority)
 
 # User Authentication Documentation
 
