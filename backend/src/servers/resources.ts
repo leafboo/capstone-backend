@@ -26,6 +26,7 @@ app.get("/users", (req, res) => {
 });
 
 
+// ---------------------------------------/users-----------------------------------------------------------------------------
 app.post("/users", async (req, res) => {
     const {password, userName, email} = req.body;
 
@@ -48,7 +49,7 @@ app.post("/users", async (req, res) => {
     }
 });
 
-// For getting the current user's details
+// ---------------------------------------/users/me-----------------------------------------------------------------------------
 app.get("/users/me", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
 
@@ -58,7 +59,23 @@ app.get("/users/me", authenticateToken, async (req, res) => {
 
     res.status(200).json(userDetails[0]);
 });
+app.delete("/users/me", authenticateToken, async (req, res) => {
+    const userId = res.locals.user.sub;
 
+    let query = 'SELECT UserName FROM Users WHERE Id = ?';
+    const [ results ] = await pool.query(query, [userId]);
+    const userName = JSON.parse(JSON.stringify(results));  
+
+    res.clearCookie('jwt_access_token', { httpOnly: true, sameSite: 'strict' });
+    res.clearCookie('jwt_refresh_token', { httpOnly: true, sameSite: 'strict' });
+
+    query = 'DELETE FROM Users WHERE Id = ?';
+    await pool.query(query, [userId]);
+
+    res.status(200).json({message: `Successfully deleted ${userName[0].UserName}`});
+});
+
+// ---------------------------------------/workspaces-----------------------------------------------------------------------------
 app.get("/workspaces", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
     
@@ -83,6 +100,7 @@ app.post("/workspaces", authenticateToken,  async(req, res) => {
 
 });
 
+// ---------------------------------------/workspaces/:id-----------------------------------------------------------------------------
 app.get("/workspaces/:id", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
     const { id } = req.params;
@@ -105,6 +123,7 @@ app.delete("/workspaces/:id", authenticateToken, async (req, res) => {
     res.status(200).json({message: "Workspace successfully deleted"});
 });
 
+// ---------------------------------------/researchPapers-----------------------------------------------------------------------------
 app.post("/researchPapers", authenticateToken, async (req, res) => {
     const { title, yearOfPublication, keywords, abstract, methods, findings } = req.body;
 
