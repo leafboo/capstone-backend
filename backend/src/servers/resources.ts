@@ -124,19 +124,40 @@ app.delete("/workspaces/:id", authenticateToken, async (req, res) => {
 });
 
 // ---------------------------------------/researchPapers-----------------------------------------------------------------------------
-app.post("/researchPapers", authenticateToken, async (req, res) => {
-    const { title, yearOfPublication, keywords, abstract, methods, findings } = req.body;
-
-    const query = `INSERT INTO ResearchPapers (Title, YearOfPublication, Keywords, Abstract, Methods, Findings)
+app.post("/workspaces/:id/researchPapers", authenticateToken, async (req, res) => {
+    const { title, yearOfPublication, keywords, abstract, methods, findings} = req.body;
+    const { id } = req.params;
+     
+    const query = `INSERT INTO ResearchPapers (Title, YearOfPublication, Keywords, Abstract, Methods, Findings, WorkspaceId)
                    VALUES (?, ?, ?, ?, ?, ?)`;
-    const [ results ] = await pool.query(query, [title, yearOfPublication, keywords, abstract, methods, findings]);
+    const [ results ] = await pool.query(query, [title, yearOfPublication, keywords, abstract, methods, findings, id]);
     const researchPaperId = JSON.parse(JSON.stringify(results)).insertId;
 
     res.status(201).json({message: "Research paper successfully added", researchPaperId: researchPaperId});
-})
+});
 
+app.get("workspaces/:id/researchPapers", authenticateToken, async (req, res) => {
+	const { id } = req.params;
+	
+	const query = 'SELECT * FROM ResearchPapers WHERE WorkspaceId = ?';
+	const [ results ] = await pool.query(query, [id]);
+	const researchPapers = JSON.parse(JSON.stringify(results));
 
+	console.log(researchPapers);
+	res.status(200).json({message: "Put research papers here"})
+});
 
+app.delete("/researchPapers/:id", authenticateToken, async (req, res) => {
+	const { id } = req.params;
+
+	const query = 'DELETE FROM ResearchPapers WHERE Id = ?';
+	const [ results ] = await pool.query(query, [id]);
+	console.log(results);
+
+	res.status(200).json({message: "Successfully deleted research paper"});
+});
+
+// ---------------------------------------/paperReferences-----------------------------------------------------------------------------
 
 
 function authenticateToken(req: Request, res: Response, next: NextFunction)  {
