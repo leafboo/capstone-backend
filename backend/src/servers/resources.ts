@@ -160,6 +160,42 @@ app.delete("/researchPapers/:id", authenticateToken, async (req, res) => {
 // ---------------------------------------/paperReferences-----------------------------------------------------------------------------
 
 
+app.get("/workspaces/:id/paperReferences", authenticateToken, async (req, res) => {
+	const { id } = req.params;
+
+	const query = 'SELECT * FROM PaperReferences WHERE WorkspaceId = ?';
+	const [ results ] = await pool.query(query, [id]);
+	console.log(results);
+
+	res.status(200).json({message: "Paper References results should be displayed here"});
+});
+
+app.post("/workspaces/:id/paperReferences", authenticateToken, async (req, res) => {
+	const { apa, ieee } = req.body;
+	const { id } = req.params;
+
+	const query = `INSERT INTO PaperReferences (APA, IEEE, WorkspaceId);
+		       VALUES (?, ?, ?)`;
+	const [ results ] = await pool.query(query, [apa, ieee, id]);
+	console.log(results);
+
+	res.status(201).json({message: "Reference successfully added "});
+});
+
+app.delete("/paperReferences/:id", authenticateToken, async (req, res) => {
+	const { id } = req.params;
+
+	const query = 'DELETE FROM PaperReferences WHERE Id = ?';
+	const [ results ] = await pool.query(query, [id]);
+	console.log(results);
+
+	res.status(200).json({message: "Reference successfully deleted"});
+});
+
+
+
+
+
 function authenticateToken(req: Request, res: Response, next: NextFunction)  {
 
     const accessToken: string = req.cookies.jwt_access_token;
