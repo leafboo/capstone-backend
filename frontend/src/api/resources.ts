@@ -77,9 +77,9 @@ const resourcesApi = {
         }
     }, 
 
-    async getWorkspace(id: number) {
+    async getWorkspace(workspaceId: number) {
         try {
-            const response = await axiosInstance.get(`/workspaces/${id}`);
+            const response = await axiosInstance.get(`/workspaces/${workspaceId}`);
             console.log(response);
         } catch(err) {
             console.error(err);
@@ -99,18 +99,18 @@ const resourcesApi = {
         }
     },
 
-    async deleteWorkspace(id: number) {
+    async deleteWorkspace(workspaceId: number) {
         try {
-            const response = await axiosInstance.delete(`/workspaces/${id}`);
+            const response = await axiosInstance.delete(`/workspaces/${workspaceId}`);
             console.log(response);
         } catch(err) {
             console.error(err);
         }
     },
     // ----------------------------researchPaper----------------------------------
-    async addResearchPaper(id: number) {
+    async addResearchPaper(workspaceId: number) {
         try {
-            const response = await axios.post(`/workspaces/${id}/researchPapers`, {
+            const response = await axios.post(`/workspaces/${workspaceId}/researchPapers`, {
                 title: "",
                 yearOfPublication: "",
                 keywords: "",

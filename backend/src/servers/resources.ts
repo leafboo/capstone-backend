@@ -100,24 +100,24 @@ app.post("/workspaces", authenticateToken,  async(req, res) => {
 
 });
 
-// ---------------------------------------/workspaces/:id-----------------------------------------------------------------------------
-app.get("/workspaces/:id", authenticateToken, async (req, res) => {
+// ---------------------------------------/workspaces/:workspaceId-----------------------------------------------------------------------------
+app.get("/workspaces/:workspaceId", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
-    const { id } = req.params;
+    const { workspaceId } = req.params;
     
     const query = 'SELECT * FROM Workspaces WHERE Id = ? AND UserId = ?';
-    const [ results ] = await pool.query(query, [id, userId]);
+    const [ results ] = await pool.query(query, [workspaceId, userId]);
     const workspace = JSON.parse(JSON.stringify(results));
 
     res.status(200).json(workspace);
 });
 
-app.delete("/workspaces/:id", authenticateToken, async (req, res) => {
+app.delete("/workspaces/:workspaceId", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
-    const { id } = req.params;
+    const { workspaceId } = req.params;
 
     const query = 'DELETE FROM Workspaces WHERE Id = ? AND UserId = ?';
-    const [ results ] = await pool.query(query, [id, userId]);
+    const [ results ] = await pool.query(query, [workspaceId, userId]);
     const deleteResult = JSON.parse(JSON.stringify(results));
     console.log(deleteResult);
 
@@ -125,13 +125,13 @@ app.delete("/workspaces/:id", authenticateToken, async (req, res) => {
 });
 
 // ---------------------------------------/researchPapers-----------------------------------------------------------------------------
-app.post("/workspaces/:id/researchPapers", authenticateToken, async (req, res) => {
+app.post("/workspaces/:workspaceId/researchPapers", authenticateToken, async (req, res) => {
     const { title, yearOfPublication, keywords, abstract, methods, findings, apa, ieee} = req.body;
-    const { id } = req.params;
+    const { workspaceId } = req.params;
      
     const query = `INSERT INTO ResearchPapers (Title, YearOfPublication, Keywords, Abstract, Methods, Findings, apa, ieee, WorkspaceId)
                    VALUES (?, ?, ?, ?, ?, ?)`;
-    const [ results ] = await pool.query(query, [title, yearOfPublication, keywords, abstract, methods, findings, apa, ieee, id]);
+    const [ results ] = await pool.query(query, [title, yearOfPublication, keywords, abstract, methods, findings, apa, ieee, workspaceId]);
     const researchPaperId = JSON.parse(JSON.stringify(results)).insertId;
 
     res.status(201).json({message: "Research paper successfully added", researchPaperId: researchPaperId});
