@@ -85,10 +85,10 @@ app.get("/workspaces", authenticateToken, async (req, res) => {
 
     res.status(200).json(workspaces);
 });
+
 app.post("/workspaces", authenticateToken,  async(req, res) => {
     const userId = res.locals.user.sub;
-    const {workspaceName, dateCreated} = req.body;
-    const numberOfPapers = 0;
+    const {workspaceName, dateCreated, numberOfPapers} = req.body;
 
     const query = `INSERT INTO Workspaces (Name, DateCreated, NumberOfPapers, UserId) 
                    VALUES (?, ?, ?, ?)`;
@@ -111,6 +111,7 @@ app.get("/workspaces/:id", authenticateToken, async (req, res) => {
 
     res.status(200).json(workspace);
 });
+
 app.delete("/workspaces/:id", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
     const { id } = req.params;
@@ -136,11 +137,11 @@ app.post("/workspaces/:id/researchPapers", authenticateToken, async (req, res) =
     res.status(201).json({message: "Research paper successfully added", researchPaperId: researchPaperId});
 });
 
-app.get("workspaces/:id/researchPapers", authenticateToken, async (req, res) => {
-	const { id } = req.params;
+app.get("workspaces/:workspaceId/researchPapers", authenticateToken, async (req, res) => {
+	const { workspaceId } = req.params;
 	
 	const query = 'SELECT * FROM ResearchPapers WHERE WorkspaceId = ?';
-	const [ results ] = await pool.query(query, [id]);
+	const [ results ] = await pool.query(query, [workspaceId]);
 	const researchPapers = JSON.parse(JSON.stringify(results));
 
 	console.log(researchPapers);

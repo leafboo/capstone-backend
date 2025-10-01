@@ -62,6 +62,15 @@ export default function Dashboard() {
                 <li>More User details to be added...</li>
             </ul> <br />
 
+
+            <form action="">
+                <input type="text" placeholder="Enter workspace name" required />
+                <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" >Generate workspace</button>
+            </form>
+            <span>Your workspaces: </span>
+            <div>Workspaces here</div>
+
+
             <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" onClick={handleLogout} >Log out</button> 
         </>
     )

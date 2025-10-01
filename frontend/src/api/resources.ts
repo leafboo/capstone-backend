@@ -35,16 +35,114 @@ axiosInstance.interceptors.response.use(function onFulfilled(response) {
 
 
 const resourcesApi = {
-
-    async getUser() {
+    // ----------------------------user----------------------------------
+    async getUserDetails() {
         try {
-            const response = await axiosInstance.get("/users/me")
+            const response = await axiosInstance.get("/users/me");
             return response.data;
         } catch(err) {
             console.error(err);
         }
 
+    },
+
+    async addUser() {
+        try {
+            const response = await axiosInstance.post("/users", {
+                userName: "",
+                email: "",
+                password: ""
+            });
+            console.log(response);
+        } catch(err) {
+            console.error(err);
+        }
+    },
+
+    async deleteUser() {
+        try {
+            const response = await axiosInstance.delete("/users/me");
+            console.log(response);
+        } catch(err) {
+            console.error(err);
+        }
+    },
+    // ----------------------------workspaces----------------------------------
+    async getWorkspaces() {
+        try {
+            const response = await axiosInstance.get("/workspaces");
+            return response.data;
+        } catch(err) {
+            console.error(err);
+        }
+    }, 
+
+    async getWorkspace(id: number) {
+        try {
+            const response = await axiosInstance.get(`/workspaces/${id}`);
+            console.log(response);
+        } catch(err) {
+            console.error(err);
+        }
+    },
+
+    async addWorkspace() {
+        try {
+            const response = await axiosInstance.post("/workspaces", {
+                workspaceName: "",
+                dateCreated: "",
+                numberOfPapers: ""
+            });
+            console.log(response);
+        } catch(err) {
+            console.error(err);
+        }
+    },
+
+    async deleteWorkspace(id: number) {
+        try {
+            const response = await axiosInstance.delete(`/workspaces/${id}`);
+            console.log(response);
+        } catch(err) {
+            console.error(err);
+        }
+    },
+    // ----------------------------researchPaper----------------------------------
+    async addResearchPaper(id: number) {
+        try {
+            const response = await axios.post(`/workspaces/${id}/researchPapers`, {
+                title: "",
+                yearOfPublication: "",
+                keywords: "",
+                abstract: "",
+                methods: "",
+                findings: "",
+                apa: "",
+                ieee: ""
+            });
+            console.log(response);
+        } catch (err) {
+            console.error(err);
+        }
+    },
+
+    async getResearchPapers(workspaceId: number) {
+        try {
+            const response = await axiosInstance.get(`/workspaces/${workspaceId}/reserachPapers`);
+            console.log(response);
+        } catch (err) {
+            console.error(err);
+        }
+    },
+
+    async deleteResearchPaper(researchPaperId: number) {
+        try {
+            const response = await axiosInstance.delete(`/researchPapers/${researchPaperId}`);
+            console.log(response.data);
+        } catch(err) {
+            console.error(err);
+        }
     }
-}
+ }
 
 export default resourcesApi;
