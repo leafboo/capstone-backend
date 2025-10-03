@@ -13,7 +13,7 @@ export default function WorkspaceRow(props: WorkspaceRowType) {
     const navigate = useNavigate();
 
     function goToWorkspace() {
-        navigate("/workspace/id")
+        navigate(`/workspaces/${props.id}`);
     }
 
     async function handleDeleteWorkspace() {
