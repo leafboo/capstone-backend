@@ -96,7 +96,7 @@ export default function Dashboard() {
 
 
     const userWorkspacesElement = userWorkspaces?.map(({Id, Name}) => (
-        <WorkspaceRow id={Id} workspaceName={Name} />
+        <WorkspaceRow id={Id} workspaceName={Name} handleGetWorkspaces={handleGetWorkspaces} />
     ));
 
 
