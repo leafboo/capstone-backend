@@ -41,7 +41,7 @@ const resourcesApi = {
             const response = await axiosInstance.get("/users/me");
             return response.data;
         } catch(err) {
-            console.error(err);
+            throw err;
         }
 
     },
@@ -55,7 +55,7 @@ const resourcesApi = {
             });
             console.log(response);
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     },
 
@@ -64,7 +64,7 @@ const resourcesApi = {
             const response = await axiosInstance.delete("/users/me");
             console.log(response);
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     },
     // ----------------------------workspaces----------------------------------
@@ -73,29 +73,28 @@ const resourcesApi = {
             const response = await axiosInstance.get("/workspaces");
             return response.data;
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     }, 
 
     async getWorkspace(workspaceId: number) {
         try {
             const response = await axiosInstance.get(`/workspaces/${workspaceId}`);
-            console.log(response);
+            console.log(response.data);
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     },
 
-    async addWorkspace() {
+    async addWorkspace(workspaceName: string, dateCreated: string) {
         try {
             const response = await axiosInstance.post("/workspaces", {
-                workspaceName: "",
-                dateCreated: "",
-                numberOfPapers: ""
+                workspaceName: workspaceName,
+                dateCreated: dateCreated
             });
-            console.log(response);
+            return response.data;
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     },
 
@@ -104,7 +103,7 @@ const resourcesApi = {
             const response = await axiosInstance.delete(`/workspaces/${workspaceId}`);
             console.log(response);
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     },
     // ----------------------------researchPaper----------------------------------
@@ -122,7 +121,7 @@ const resourcesApi = {
             });
             console.log(response);
         } catch (err) {
-            console.error(err);
+            throw err;
         }
     },
 
@@ -131,7 +130,7 @@ const resourcesApi = {
             const response = await axiosInstance.get(`/workspaces/${workspaceId}/reserachPapers`);
             console.log(response);
         } catch (err) {
-            console.error(err);
+            throw err;
         }
     },
 
@@ -140,7 +139,7 @@ const resourcesApi = {
             const response = await axiosInstance.delete(`/researchPapers/${researchPaperId}`);
             console.log(response.data);
         } catch(err) {
-            console.error(err);
+            throw err;
         }
     }
  }

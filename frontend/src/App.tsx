@@ -18,7 +18,7 @@ function App() {
 	const checkAuthentication = async() => {
 		try {
 
-			await resourcesApi.getUser();
+			await resourcesApi.getUserDetails();
 			setIsAuthenticated(true);
 			localStorage.setItem("isUserAuthenticated", "true");
 			

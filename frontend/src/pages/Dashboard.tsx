@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import WorkspaceRow from "../components/WorkspaceRow";
 import resourcesApi from "../api/resources";
 import authApi from "../api/auth";
 
@@ -12,16 +13,40 @@ type UserType = {
     hash: string;
 }
 
+type WorkspaceType = {
+    Id: number;
+    Name: string;
+    DateCreated: string;
+    UserId: number;
+}
+
+function getMySQLDate() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-based
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+
 
 
 export default function Dashboard() {
-    const [UserDetails, setUserDetails] = useState<UserType>();
     const { setIsAuthenticated } = useContext(AuthContext);
+
+
+    const [userDetails, setUserDetails] = useState<UserType>();
+    const [userWorkspaces, setUserWorkspaces] = useState<WorkspaceType[]>();
+    
+
+    const date = getMySQLDate();
+
+
 
     useEffect(() => {
         const getUserData = async() => {
             try {
-                const {Id, UserName, Email, Salt, Hash} = await resourcesApi.getUser();
+                const {Id, UserName, Email, Salt, Hash} = await resourcesApi.getUserDetails();
                 setUserDetails({
                     userId: Id,
                     userName: UserName,
@@ -34,6 +59,8 @@ export default function Dashboard() {
             }
         }
         getUserData();
+
+        handleGetWorkspaces();
     }, []);
 
 
@@ -46,6 +73,32 @@ export default function Dashboard() {
         }
     }
 
+    async function handleCreationOfWorkspace(event: FormData) {
+        const workspaceName = event.get("workspaceName") as string;
+        
+        try {
+            console.log(await resourcesApi.addWorkspace(workspaceName, date));
+            handleGetWorkspaces();
+        } catch(err) {
+            console.error(err);
+        }
+        
+    }
+
+    async function handleGetWorkspaces() {
+        try {
+            const workspaces = await resourcesApi.getWorkspaces();
+            setUserWorkspaces(workspaces);
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+
+    const userWorkspacesElement = userWorkspaces?.map(({Id, Name}) => (
+        <WorkspaceRow id={Id} workspaceName={Name} />
+    ));
+
 
     
     
@@ -53,22 +106,22 @@ export default function Dashboard() {
 
     return (
         <>
-            <h2>Welcome {UserDetails?.userName}</h2><br />
+            <h2>Welcome {userDetails?.userName}</h2><br />
             
             <div>User Details:</div>
             <ul className="list-disc">
-                <li>User Name: {UserDetails?.userName}</li>
-                <li>User Email: {UserDetails?.email}</li>
+                <li>User Name: {userDetails?.userName}</li>
+                <li>User Email: {userDetails?.email}</li>
                 <li>More User details to be added...</li>
             </ul> <br />
 
 
-            <form action="">
-                <input type="text" placeholder="Enter workspace name" required />
-                <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" >Generate workspace</button>
+            <form action={handleCreationOfWorkspace}>
+                <input type="text" placeholder="Enter workspace name" className="border" name="workspaceName" required />
+                <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" >Generate workspace</button><br />
             </form>
             <span>Your workspaces: </span>
-            <div>Workspaces here</div>
+            {userWorkspacesElement}   
 
 
             <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" onClick={handleLogout} >Log out</button> 

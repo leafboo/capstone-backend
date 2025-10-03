@@ -88,11 +88,11 @@ app.get("/workspaces", authenticateToken, async (req, res) => {
 
 app.post("/workspaces", authenticateToken,  async(req, res) => {
     const userId = res.locals.user.sub;
-    const {workspaceName, dateCreated, numberOfPapers} = req.body;
+    const {workspaceName, dateCreated} = req.body;
 
-    const query = `INSERT INTO Workspaces (Name, DateCreated, NumberOfPapers, UserId) 
-                   VALUES (?, ?, ?, ?)`;
-    const [ results ] = await pool.query(query, [workspaceName, dateCreated, numberOfPapers, userId]);
+    const query = `INSERT INTO Workspaces (Name, DateCreated, UserId) 
+                   VALUES (?, ?, ?)`;
+    const [ results ] = await pool.query(query, [workspaceName, dateCreated, userId]);
     const workspaceId = JSON.parse(JSON.stringify(results)).insertId;
 
 
