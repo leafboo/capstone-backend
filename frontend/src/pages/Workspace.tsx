@@ -29,6 +29,7 @@ export default function Workspace() {
     const { workspaceId } = useParams();
     const parsedWorkspaceId = workspaceId ? parseInt(workspaceId, 10) : undefined;
     const researchPapersForTable = researchPapers?.map(researchPaper => ({
+        Id: researchPaper.Id,
         Title: researchPaper.Title,
         Authors: researchPaper.Authors,
         PublicationYear: researchPaper.PublicationYear,
@@ -103,6 +104,19 @@ export default function Workspace() {
     }
 
 
+    async function handleDeleteResearchPaper(researchPaperId: number) {
+
+        if (!parsedWorkspaceId || !researchPaperId) return;
+
+        try {
+            await resourcesApi.deleteResearchPaper(researchPaperId);
+            handleGetResearchPapers();
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+
     return (
         <>
             <div>workspace id: {workspaceId}</div>
@@ -129,7 +143,7 @@ export default function Workspace() {
                 <br />
                 <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" >Add Research Paper</button>
             </form>
-            <LiteratureMatrixTable researchPapersForTable={researchPapersForTable} />
+            <LiteratureMatrixTable handleDeleteResearchPaper={handleDeleteResearchPaper} researchPapersForTable={researchPapersForTable} />
         </>
     )
 }

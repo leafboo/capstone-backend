@@ -151,8 +151,7 @@ app.delete("/researchPapers/:id", authenticateToken, async (req, res) => {
 	const { id } = req.params;
 
 	const query = 'DELETE FROM ResearchPapers WHERE Id = ?';
-	const [ results ] = await pool.query(query, [id]);
-	console.log(results);
+	await pool.query(query, [id]);
 
 	res.status(200).json({message: "Successfully deleted research paper"});
 });

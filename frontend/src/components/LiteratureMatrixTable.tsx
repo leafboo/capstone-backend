@@ -3,14 +3,15 @@ import { type ResearchPaperType } from "../types/types";
 
 
 type LitMatrixPropType = {
-    researchPapersForTable: ResearchPaperType[]
+    handleDeleteResearchPaper: (researchPaperId: number) => Promise<void>;
+    researchPapersForTable: ResearchPaperType[];
 }
 
 
-export default function LiteratureMatrixTable({researchPapersForTable}: LitMatrixPropType) {
+export default function LiteratureMatrixTable({handleDeleteResearchPaper, researchPapersForTable}: LitMatrixPropType) {
 
-    const litMatrixRowElement = researchPapersForTable?.map(({Title, Authors, PublicationYear, Abstract, Keywords, Methods, Findings}) => (
-        <LiteratureMatrixRow Title={Title} Authors={Authors} PublicationYear={PublicationYear} Abstract={Abstract} Keywords={Keywords} Methods={Methods} Findings={Findings} />
+    const litMatrixRowElement = researchPapersForTable?.map(({Id, Title, Authors, PublicationYear, Abstract, Keywords, Methods, Findings}) => (
+        <LiteratureMatrixRow handleDeleteResearchPaper={handleDeleteResearchPaper} Id={Id} Title={Title} Authors={Authors} PublicationYear={PublicationYear} Abstract={Abstract} Keywords={Keywords} Methods={Methods} Findings={Findings} />
     ));
 
 
@@ -27,6 +28,7 @@ export default function LiteratureMatrixTable({researchPapersForTable}: LitMatri
                         <th className="p-[1rem] border-[1px]">Abstract</th>
                         <th className="p-[1rem] border-[1px]">Methods</th>
                         <th className="p-[1rem] border-[1px]">Findings</th>
+                        <th className="p-[1rem] border-[1px]"></th>
                     </tr>
                 </thead>
                 <tbody>
