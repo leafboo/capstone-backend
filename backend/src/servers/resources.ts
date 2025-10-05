@@ -126,26 +126,25 @@ app.delete("/workspaces/:workspaceId", authenticateToken, async (req, res) => {
 
 // ---------------------------------------/researchPapers-----------------------------------------------------------------------------
 app.post("/workspaces/:workspaceId/researchPapers", authenticateToken, async (req, res) => {
-    const { title, yearOfPublication, keywords, abstract, methods, findings, apa, ieee} = req.body;
+    const { title, authors, publicationYear, keywords, abstract, methods, findings, apa, ieee} = req.body;
     const { workspaceId } = req.params;
      
-    const query = `INSERT INTO ResearchPapers (Title, YearOfPublication, Keywords, Abstract, Methods, Findings, apa, ieee, WorkspaceId)
-                   VALUES (?, ?, ?, ?, ?, ?)`;
-    const [ results ] = await pool.query(query, [title, yearOfPublication, keywords, abstract, methods, findings, apa, ieee, workspaceId]);
+    const query = `INSERT INTO ResearchPapers (Title, Authors, PublicationYear, Keywords, Abstract, Methods, Findings, APA, IEEE, WorkspaceId)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const [ results ] = await pool.query(query, [title, authors, publicationYear, keywords, abstract, methods, findings, apa, ieee, workspaceId]);
     const researchPaperId = JSON.parse(JSON.stringify(results)).insertId;
 
     res.status(201).json({message: "Research paper successfully added", researchPaperId: researchPaperId});
 });
 
-app.get("workspaces/:workspaceId/researchPapers", authenticateToken, async (req, res) => {
+app.get("/workspaces/:workspaceId/researchPapers", authenticateToken, async (req, res) => {
 	const { workspaceId } = req.params;
 	
 	const query = 'SELECT * FROM ResearchPapers WHERE WorkspaceId = ?';
 	const [ results ] = await pool.query(query, [workspaceId]);
 	const researchPapers = JSON.parse(JSON.stringify(results));
 
-	console.log(researchPapers);
-	res.status(200).json({message: "Put research papers here"})
+	res.status(200).json(researchPapers)
 });
 
 app.delete("/researchPapers/:id", authenticateToken, async (req, res) => {

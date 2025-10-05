@@ -107,19 +107,19 @@ const resourcesApi = {
         }
     },
     // ----------------------------researchPaper----------------------------------
-    async addResearchPaper(workspaceId: number) {
+    async addResearchPaper(workspaceId: number, title: string, authors: string, keywords: string, publicationYear: string, abstract: string, methods: string, findings: string, apa: string, ieee: string) {
         try {
-            const response = await axios.post(`/workspaces/${workspaceId}/researchPapers`, {
-                title: "",
-                yearOfPublication: "",
-                keywords: "",
-                abstract: "",
-                methods: "",
-                findings: "",
-                apa: "",
-                ieee: ""
+            await axiosInstance.post(`/workspaces/${workspaceId}/researchPapers`, {
+                title: title,
+                authors: authors,
+                publicationYear: publicationYear,
+                keywords: keywords,
+                abstract: abstract,
+                methods: methods,
+                findings: findings,
+                apa: apa,
+                ieee: ieee
             });
-            console.log(response);
         } catch (err) {
             throw err;
         }
@@ -127,8 +127,8 @@ const resourcesApi = {
 
     async getResearchPapers(workspaceId: number) {
         try {
-            const response = await axiosInstance.get(`/workspaces/${workspaceId}/reserachPapers`);
-            console.log(response);
+            const response = await axiosInstance.get(`/workspaces/${workspaceId}/researchPapers`);
+            return response.data;
         } catch (err) {
             throw err;
         }
