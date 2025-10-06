@@ -3,6 +3,7 @@ import PageNotFound from './pages/PageNotFound'
 import LandingPage from './pages/LandingPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import RoutesForUnauthenticatedUsers from './utils/RoutesForUnauthenticatedUsers'
 import ProtectedRoutes from './utils/ProtectedRoutes'
 import Dashboard from './pages/Dashboard'
 import Workspaces from './pages/Workspaces'
@@ -39,15 +40,19 @@ function App() {
   	    <AuthContext.Provider value={value}>
 
       		<Routes >
-				<Route path='/' element={<LandingPage />} />
-				<Route path='/signup' element={<SignUp />} />
-				<Route path='/login' element={<Login />} />
+
+				<Route element={<RoutesForUnauthenticatedUsers />}>
+				  	<Route path='/' element={<LandingPage />} />
+				  	<Route path='/signup' element={<SignUp />} />
+				  	<Route path='/login' element={<Login />} />
+				</Route>
 
 				<Route element={<ProtectedRoutes />}>
 					<Route path='/dashboard' element={<Dashboard />} />
 					<Route path='/workspaces' element={<Workspaces />} />
 					<Route path='/workspaces/:workspaceId' element={<Workspace />} />
 				</Route>
+
 				<Route path='*' element={<PageNotFound />} />
 
 			</Routes>
