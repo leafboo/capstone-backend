@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import 'dotenv/config.js';
+import { hash } from "crypto";
 
 
 // remember: Every line of code is a vulnerability
@@ -49,7 +50,6 @@ app.post("/users", async (req, res) => {
     }
 });
 
-// ---------------------------------------/users/me-----------------------------------------------------------------------------
 app.get("/users/me", authenticateToken, async (req, res) => {
     const userId = res.locals.user.sub;
 
@@ -74,6 +74,20 @@ app.delete("/users/me", authenticateToken, async (req, res) => {
 
     res.status(200).json({message: `Successfully deleted ${userName[0].UserName}`});
 });
+
+app.put("/users/me/password", authenticateToken, async (req, res) => {
+    const userId = res.locals.user.sub;
+    const { newPassword } = req.body;
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+
+    const query = 'UPDATE Users SET Salt = ?, Hash = ? WHERE Id = ?';
+    await pool.query(query, [salt, hashedPassword, userId]);
+
+    res.status(204).json({message: 'Password successfully updated'});
+})
 
 // ---------------------------------------/workspaces-----------------------------------------------------------------------------
 app.get("/workspaces", authenticateToken, async (req, res) => {

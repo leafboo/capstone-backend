@@ -8,6 +8,7 @@ import ProtectedRoutes from './utils/ProtectedRoutes'
 import Dashboard from './pages/Dashboard'
 import Workspaces from './pages/Workspaces'
 import Workspace from './pages/Workspace'
+import PasswordChange from './pages/PasswordChange'
 import { AuthContext } from './context/AuthContext'
 import { useState } from 'react'
 import resourcesApi from './api/resources'
@@ -49,6 +50,7 @@ function App() {
 
 				<Route element={<ProtectedRoutes />}>
 					<Route path='/dashboard' element={<Dashboard />} />
+					<Route path='/passwordChange' element={<PasswordChange />} />
 					<Route path='/workspaces' element={<Workspaces />} />
 					<Route path='/workspaces/:workspaceId' element={<Workspace />} />
 				</Route>

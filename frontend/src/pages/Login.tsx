@@ -36,7 +36,7 @@ function Login() {
         		<label htmlFor="nameEmail">username or email</label> <br />
         		<input id='nameEmail' name='nameEmail' type="text" className='border' /> <br />
         		<label htmlFor="password">password</label> <br />
-        		<input id='password' name='password' type="text" className='border' /> <br />
+        		<input id='password' name='password' type="password" className='border' /> <br />
         		<button type='submit' className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" >Log in</button> 
       		</form> 
    	 	</>

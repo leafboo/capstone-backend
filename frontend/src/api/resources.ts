@@ -53,7 +53,7 @@ const resourcesApi = {
                 email: "",
                 password: ""
             });
-            console.log(response);
+            console.log(response.data);
         } catch(err) {
             throw err;
         }
@@ -62,8 +62,19 @@ const resourcesApi = {
     async deleteUser() {
         try {
             const response = await axiosInstance.delete("/users/me");
-            console.log(response);
+            console.log(response.data);
         } catch(err) {
+            throw err;
+        }
+    },
+
+    async updateUserPassword(newPassword: string) {
+        try {
+            const response = await axiosInstance.put("/users/me/password", {
+                newPassword: newPassword
+            });
+            console.log(response.data);
+        } catch (err) {
             throw err;
         }
     },

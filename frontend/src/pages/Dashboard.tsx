@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import WorkspaceRow from "../components/WorkspaceRow";
@@ -33,6 +34,7 @@ function getMySQLDate() {
 
 export default function Dashboard() {
     const { setIsAuthenticated } = useContext(AuthContext);
+    const navigate = useNavigate();
 
 
     const [userDetails, setUserDetails] = useState<UserType>();
@@ -124,6 +126,7 @@ export default function Dashboard() {
             {userWorkspacesElement}   
 
 
+            <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" onClick={() => { navigate('/passwordChange'); }} >Change password</button> 
             <button className="border border-black p-[.5rem] mt-[1.5rem] cursor-pointer" onClick={handleLogout} >Log out</button> 
         </>
     )
