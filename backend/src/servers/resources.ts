@@ -161,15 +161,26 @@ app.get("/workspaces/:workspaceId/researchPapers", authenticateToken, async (req
 	res.status(200).json(researchPapers)
 });
 
-app.delete("/researchPapers/:id", authenticateToken, async (req, res) => {
-	const { id } = req.params;
+app.delete("/researchPapers/:researchPaperId", authenticateToken, async (req, res) => {
+	const { researchPaperId } = req.params;
 
 	const query = 'DELETE FROM ResearchPapers WHERE Id = ?';
-	await pool.query(query, [id]);
+	await pool.query(query, [researchPaperId]);
 
 	res.status(200).json({message: "Successfully deleted research paper"});
 });
 
+
+// ---------------------------------------Edit research paper cells-----------------------------------------------------------------------------
+app.put("/researchPapers/:researchPaperId", authenticateToken, async (req, res) => {
+    const { researchPaperId } = req.params;
+    const {value, columnName} = req.body;
+
+    const query = 'UPDATE ResearchPapers SET ' + columnName + ' = ? WHERE Id = ?';
+    await pool.query(query, [value, researchPaperId]);
+
+    res.status(200).json({message: `Successfully updated the ${columnName} attribute from the ResearchPaper table`})
+});
 
 
 

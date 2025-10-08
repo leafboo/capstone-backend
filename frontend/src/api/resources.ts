@@ -152,7 +152,19 @@ const resourcesApi = {
         } catch(err) {
             throw err;
         }
+    },
+
+    async updateResearchPaperColumn(researchPaperId: number, columnName: string, value: string) {
+        try {
+            await axiosInstance.put(`/researchPapers/${researchPaperId}`, {
+                columnName: columnName,
+                value: value
+            })
+        } catch(err) {
+            throw err;
+        }
     }
+
  }
 
 export default resourcesApi;
