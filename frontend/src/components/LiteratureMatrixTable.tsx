@@ -18,7 +18,7 @@ export default function LiteratureMatrixTable({handleDeleteResearchPaper, resear
     return (
         <>
             <div className="flex justify-center text-[30px] font-bold"> Literature Matrix</div><br />
-            <table className=" w-[80rem] ml-auto mr-auto text-left" id="my-table">
+            <table className=" w-[80rem] ml-auto mr-auto text-left table-fixed" id="my-table">
                 <thead>
                     <tr>
                         <th className="p-[1rem] border-[1px]">Title</th>
